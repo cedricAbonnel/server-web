@@ -1,0 +1,81 @@
+#!/bin/bash
+
+#######################################
+# Bash script to install an AMP stack and PHPMyAdmin plus tweaks. For Debian based systems. French version.
+#
+# Script bash pour installer Apache / MariaDB / PHP 7.4 / PHPMyAdmin pour Linux Debian et dérivées.
+# Écrit par Cédric Abonnel / https://abonnel.fr
+
+# In case of any errors (e.g. MySQL) just re-run the script. Nothing will be re-installed except for the packages with errors.
+#######################################
+
+printMessage () {
+  echo -e "\n$Yellow$1$Cyan"
+}
+
+# Regular Colors
+Red='\033[0;31m'          # Red
+Green='\033[0;32m'        # Green
+Yellow='\033[0;33m'       # Yellow
+Purple='\033[0;35m'       # Purple
+Cyan='\033[0;36m'         # Cyan
+Color_Off='\033[0m'       # Text Reset
+
+printMessage "\n[NFO] Avant de commencer j'ai quelques questions à poser."
+
+# Demander les informations nécessaires
+read -p "Emplacement du dossier webapp pour phpMyAdmin [/usr/share/phpmyadmin]: " pmaDir
+pmaDir=${pmaDir:-/usr/share/phpmyadmin}
+
+read -p "Emplacement du dossier des données temporaires pour phpMyAdmin [/var/lib/phpmyadmin/tmp]: " pmaDirTmp
+pmaDirTmp=${pmaDirTmp:-/var/lib/phpmyadmin/tmp}
+
+read -p "Groupe Linux utilisé par le serveur Web [www-data]: " wwwGroup
+wwwGroup=${wwwGroup:-www-data}
+
+read -p "URL de l'archive phpMyAdmin [https://files.phpmyadmin.net/phpMyAdmin/5.0.2/phpMyAdmin-5.0.2-all-languages.tar.gz]: " pmaUrlDownload
+pmaUrlDownload=${pmaUrlDownload:-https://files.phpmyadmin.net/phpMyAdmin/5.0.2/phpMyAdmin-5.0.2-all-languages.tar.gz}
+# extraire le nom de l'archive du chemin URL
+pmaArchiveName=$(basename -- "$pmaUrlDownload")
+# extraire le nom de l'archive sans extension tar.gz
+pmaDirVer="${pmaArchiveName%%.*}"
+
+
+printMessage "\n[NFO] Début de l'installation"
+
+# ajouter le user courant au projet Web
+sudo chow
+
+# install php modules pour phpMyAdmin
+# list des dépendances sur https://debian.pkgs.org/sid/debian-main-amd64/phpmyadmin_4.9.5+dfsg1-2_all.deb.html
+sudo apt install php7.4-mysql php7.4-mbstring php-google-recaptcha php-json 
+
+# récupérer l'archive
+cd /tmp
+wget $pmaUrlDownload
+
+# décompresser l'archive
+tar xvf $pmaArchiveName
+
+# copier le contenu de l'archive dans la cible
+sudo mv $pmaDirVer $pmaDir
+
+# création du dossier des données temporaires
+sudo mkdir -p $pmaDirTmp
+
+# Donner les droits d'accès au serveur Web sur le dossier
+sudo chown -R root:$wwwGroup $pmaDir
+
+# Création du fichier de configuration
+pmaConfigFile=$pmaDir/config.inc.php
+touch $pmaDir/config.inc.php
+chgrp $wwwGroup $pmaDir/config.inc.php
+chmod 640 $pmaDir/config.inc.php
+cat >> $pmaDir/config.inc.php <<EOT
+<?php
+\$cfg['blowfish_secret'] = '`cat /dev/urandom | tr -dc 'a-zA-Z0-9~!@#$%^&*_()+}{?></";.,[]=-' | fold -w 32 | head -n 1`';
+EOT
+
+
+
+echo -e "$Color_Off"
