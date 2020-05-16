@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"i
+fi
+
+alias ls='ls --color=auto'
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+alias vi='vim'
+
+alias aptlist='cat /etc/apt/sources.list{,.d/*} 2>/dev/null | grep -v "^#"'
+alias agu='sudo apt-get update'
+alias agg='sudo apt-get upgrade'
+alias agd='sudo apt-get dist-upgrade'
+alias maj='agu && agg && agd'
+
+alias less='less -R'
+alias grep='grep --color'
