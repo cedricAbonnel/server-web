@@ -92,6 +92,8 @@ sed -i 's/#\?\(PerminRootLogin\s*\).*$/\1 no/' /etc/ssh/sshd_config
 sed -i 's/#\?\(PubkeyAuthentication\s*\).*$/\1 yes/' /etc/ssh/sshd_config
 sed -i 's/#\?\(PermitEmptyPasswords\s*\).*$/\1 no/' /etc/ssh/sshd_config
 #sed -i 's/#\?\(PasswordAuthentication\s*\).*$/\1 no/' /etc/ssh/sshd_config
+systemctl restart ssh
+systemctl restart sshd
 
 wget https://raw.githubusercontent.com/cedricAbonnel/server-web/master/scripts/bash_aliases
 mv bash_aliases /home/$NAME_USER/.bash_aliases
