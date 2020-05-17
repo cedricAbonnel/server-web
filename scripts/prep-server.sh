@@ -87,7 +87,7 @@ SSH_PORT=$((1000 + RANDOM % 9999))
 
 printMessage "\n[NFO] Le port SSH est désormais le $SSH_PORT"
 
-sed -i 's/#\?\(Port\s*\).*$/\1 $SSH_PORT/' /etc/ssh/sshd_config
+sed -i "s/#\?\(Port\s*\).*$/\1 $SSH_PORT/" /etc/ssh/sshd_config
 sed -i 's/#\?\(PerminRootLogin\s*\).*$/\1 no/' /etc/ssh/sshd_config
 sed -i 's/#\?\(PubkeyAuthentication\s*\).*$/\1 yes/' /etc/ssh/sshd_config
 sed -i 's/#\?\(PermitEmptyPasswords\s*\).*$/\1 no/' /etc/ssh/sshd_config
