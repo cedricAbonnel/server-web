@@ -46,7 +46,7 @@ PSD_USERG=$(</dev/urandom tr -dc '12345!{}()[]-_@#$%qwertQWERTasdfgASDFGzxcvbZXC
 read -p "[QUS] Mot de passe de l'utilisateur [$PSD_USERG]: " PSD_USER
 PSD_USER=${PSD_USER:-$PSD_USERG}
 printMessage="\n[NFO] Le mot de passe est $PSD_USER"
-sudo passwd $PSD_USER
+echo "$PSD_USER" | sudo passwd --stdin $NAME_USER
 PSD_USER=''
 PSD_USERG=''
 
