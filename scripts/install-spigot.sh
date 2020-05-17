@@ -6,7 +6,7 @@
 
 printMessage () {
   echo -e "\n$Yellow$1$Cyan"
-  $1>>~/infos_minecraft.txt
+  echo $1>>~/infos_minecraft.txt
 }
 
 
