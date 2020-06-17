@@ -32,6 +32,9 @@ if [[ "${UID}" -ne 0 ]]; then
     exit 1
 fi
 
+printMessage "\n[NFO] Configuration de la timezone"
+dpkg-reconfigure tzdata
+
 printMessage "\n[NFO] Installation des programmes"
 apt -y update
 apt -y upgrade
